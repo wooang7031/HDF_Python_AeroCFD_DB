@@ -128,6 +128,8 @@ for i, Name in enumerate(imageName):
 
 
 ## 데이터 링크
+g3 = f.create_group("3_CFD")
+
 g4['4.1_CFD_DATA'] = g3 # g3 데이터셋 오브젝트를 공유
 
 
