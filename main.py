@@ -1,5 +1,11 @@
 # Python Version 3.8.12 (Anaconda Version 4.11.0)
 
+# HDF로 CFD 해석 결과 등을 효과적으로 정리하기 위한 튜토리얼 스크립트 입니다.
+# 아래 파이썬 패키지 설치가 필요합니다. (아나콘다 4.11을 설치하면 아마 필요한 패키지가 모두 포함 되어있을 것입니다.)
+# 추가로, 생성된 HDF 결과를 확인하기 위해서 HDF viewer를 설치하시면 됩니다.
+#       https://www.hdfgroup.org/downloads/hdfview/
+#       http://210.16.192.68:8080/xwiki/bin/view/User%20Spaces/%EC%B5%9C%EB%8C%80%EC%82%B0/HDF/HDFview%20%EC%84%A4%EC%B9%98%20%EB%B0%8F%20%EC%8B%A4%ED%96%89%20%EB%B0%A9%EB%B2%95/
+
 import re                    # Python built-in
 import math                  # Python built-in
 import h5py                  # v3.2.1 or later
@@ -32,7 +38,7 @@ def String_Splite_Into_List(target, Splitter):
 
 
 # 1. HDF 파일 생성
-fileLocation = "D:\\11-CONFERENCE_AND_JOURNAL\\W2022-CONF-KSAS1-HDF\\2_HDF_Python_AeroCFD_DB\\sample.hdf5"
+fileLocation = ".\\sample.hdf5"
 f = h5py.File(fileLocation, 'w')
 
 
@@ -65,7 +71,7 @@ g3.create_dataset('array_sample', data=arr)
 
 
 ## 3.3.1. 레지듀얼 데이터 읽기
-residualPath = 'D:\\11-CONFERENCE_AND_JOURNAL\\W2022-CONF-KSAS1-HDF\\2_HDF_Python_AeroCFD_DB\\RESOURCE\\Residual_Sample.DAT'
+residualPath = '.\\RESOURCE\\Residual_Sample.DAT'
 residualData = []
 with open(residualPath, 'r') as loadfile:
     for iterm, line in enumerate(loadfile.readlines()[1::]):
@@ -86,7 +92,7 @@ Residual = g3.create_dataset('Residual_History', data=arr, compression='gzip', c
 
 
 ## 3.4. 이미지 데이터셋 생성
-imagePath = 'D:\\11-CONFERENCE_AND_JOURNAL\\W2022-CONF-KSAS1-HDF\\2_HDF_Python_AeroCFD_DB\\RESOURCE\\Image_Sample.png'
+imagePath = '.\\RESOURCE\\Image_Sample.png'
 img = Image.open(imagePath)
 img = img.convert("RGB") # 색상이 있는 RGB로 변환
 data = np.asarray((img), dtype="uint8")
@@ -102,7 +108,7 @@ dset.attrs['INTERLACE_MODE'] = np.string_('INTERLACE_PIXEL')
 
 
 ## 3.5.1. ONERA M6 Wing 해석 결과 이미지 가져오기
-imageFolder = 'D:\\11-CONFERENCE_AND_JOURNAL\\W2022-CONF-KSAS1-HDF\\2_HDF_Python_AeroCFD_DB\\RESOURCE\\IMAGE\\'
+imageFolder = '.\\RESOURCE\\IMAGE\\'
 imageName   = ['cp_distribution.png',
                'cp_distribution_y020.png', 'cp_distribution_y044.png', 'cp_distribution_y065.png',
                'cp_distribution_y090.png', 'cp_distribution_y095.png', 'cp_distribution_y099.png']
@@ -128,8 +134,6 @@ for i, Name in enumerate(imageName):
 
 
 ## 데이터 링크
-g3 = f.create_group("3_CFD")
-
 g4['4.1_CFD_DATA'] = g3 # g3 데이터셋 오브젝트를 공유
 
 
@@ -140,7 +144,7 @@ Residual.attrs['Time']      = "Steady"
 Residual.attrs['CFL']       = "3.0"
 Residual.attrs['Version']   = "1.39"
 Residual.attrs['Project']   = "HDF_Sample"
-Residual.attrs['Location']  = "D:\\11-CONFERENCE_AND_JOURNAL\\W2022-CONF-KSAS1-HDF\\2_HDF_Python_AeroCFD_DB\\RESOURCE\\"
+Residual.attrs['Location']  = ".\\RESOURCE\\"
 
 
 ## 파일 압축
